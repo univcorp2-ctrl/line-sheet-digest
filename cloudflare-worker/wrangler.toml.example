@@ -1,0 +1,13 @@
+name = "line-sheet-digest-webhook"
+main = "src/index.js"
+compatibility_date = "2025-08-01"
+
+# Secrets are recommended:
+#   npx wrangler secret put LINE_CHANNEL_SECRET
+#   npx wrangler secret put GAS_WEB_APP_URL
+#   npx wrangler secret put FORWARD_SHARED_TOKEN
+#   npx wrangler secret put TARGET_SOURCE_IDS
+
+[vars]
+# Empty means accept all verified LINE events.
+TARGET_SOURCE_IDS = ""
