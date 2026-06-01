@@ -19,7 +19,7 @@ LINE公式アカウントのMessaging APIを安全に使い、Webhook受信・Go
 ```bash
 python scripts/validate_env.py --mode local
 python scripts/property_pipeline.py --input data/sample_properties.csv --output out --format all
-python scripts/line_oa.py bot-info --dry-run
+python scripts/line_oa.py bot-info
 ```
 
 LINEへ実送信する場合は、まず `.env.example` を参考に環境変数またはGitHub Actions Secretsを設定してください。実送信コマンドには `--execute` が必要です。
