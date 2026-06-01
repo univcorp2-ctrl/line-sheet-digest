@@ -23,7 +23,7 @@ LINE公式アカウントのMessaging APIを安全に使い、Webhook受信、Go
 - LINE Flex Message JSONを生成
 - 正規化済みCSVを生成
 - LINE公式アカウントAPIの疎通確認、Bot情報取得、push、broadcastのdry-run/実行
-- Claude Code / Codex用の作業ルールを同梱
+- Claude Code / Codex が迷わず作業できるプロンプトとルールを同梱
 - GitHub Actionsでテストとサンプル物件成果物を自動生成
 
 ### このリポジトリでやらないこと
@@ -36,6 +36,102 @@ LINE公式アカウントのMessaging APIを安全に使い、Webhook受信、Go
 - Secret値のGitHubコミット
 
 OpenChatへ物件情報を流したい場合は、このリポジトリで `out/line_messages.txt` を生成し、人間が確認して手動投稿する運用にしてください。公式アカウントの1:1チャット、通常グループ、複数人トークを使う方が自動化しやすい構成です。
+
+---
+
+# AIエージェントにできるだけ全部やらせる手順
+
+人間が管理画面でしかできない作業以外は、Claude Code / Codexに任せる想定です。
+
+## 人間がやる最小作業
+
+- LINE公式アカウントを作る
+- Messaging APIを有効化する
+- `LINE_CHANNEL_SECRET` を取得する
+- `LINE_CHANNEL_ACCESS_TOKEN` を発行する
+- GitHub / Cloudflare / Google Apps ScriptにSecretを保存する
+- LINE Developers ConsoleにWebhook URLを登録する
+- 実送信前に文面と送信先を最終確認する
+
+## AIエージェントに任せる作業
+
+- リポジトリ構成確認
+- README / docs更新
+- `.env.example` 更新
+- Secret名の洗い出し
+- Cloudflare Workerの検証
+- Google Apps Script連携方針の確認
+- 物件CSV/JSONの整形
+- LINEテキスト生成
+- Flex Message JSON生成
+- dry-run送信確認
+- テスト追加/更新
+- GitHub Actions更新
+- artifact生成
+- OpenChat非公式操作が混入していないかのレビュー
+
+## 最初に貼るAIエージェント用プロンプト
+
+Claude Code / Codexを開いたら、まず以下をそのまま貼ってください。
+
+```text
+このリポジトリはLINE公式アカウントのMessaging APIと物件情報自動化のためのプロジェクトです。
+
+まず以下のファイルを読んで、ルールを把握してください。
+
+- README.md
+- AGENTS.md
+- CODEX.md
+- CLAUDE.md
+- docs/LINE_API_RESEARCH_ja.md
+- docs/SETUP_LINE_ja.md
+- docs/PROPERTY_AUTOMATION_ja.md
+- docs/architecture.md
+- docs/AI_AGENT_PROMPTS_ja.md
+
+重要ルール:
+- Secret値を読まない、表示しない、コミットしない。
+- .env / .env.* / secrets/** / credentials*.json は読まない。
+- LINE個人アカウントの自動操作は実装しない。
+- OpenChatの非公式クロールや自動投稿は実装しない。
+- 実送信は --execute が明示されたときだけにする。
+- 変更後は必ずテストとサンプル物件成果物生成を実行する。
+- READMEとdocsも必要に応じて更新する。
+
+まず現在のリポジトリ構成を確認し、初期導入に不足しているファイル、手順、テスト、CI、サンプルデータを洗い出してください。その後、Secret値なしでできる作業をすべて進めてください。
+```
+
+## 初期導入を全部整えてもらうプロンプト
+
+```text
+LINE公式アカウントのMessaging APIを使って、Webhook受信、Google Sheets保存、物件情報CSV/JSONのLINE配信用メッセージ生成、dry-run送信確認までできる初期導入状態にしてください。
+
+やってほしいこと:
+1. README.mdを、初めて開いた人がそのまま導入できる内容に更新する。
+2. docs/SETUP_LINE_ja.mdに、LINE Official Account Manager、Messaging API、Developers Console、Webhook、Cloudflare、GAS、GitHub Secretsの手順を細かく書く。
+3. Secretの実値は書かず、必要なSecret名だけ列挙する。
+4. .env.exampleを最新化する。
+5. scripts/validate_env.pyで必要な環境変数を検証できるようにする。
+6. scripts/property_pipeline.pyでサンプルCSVから以下を生成できるようにする。
+   - out/line_messages.txt
+   - out/line_flex_messages.json
+   - out/properties.normalized.csv
+   - out/summary.txt
+7. scripts/line_oa.pyでLINE公式アカウントAPIのdry-runと実行を分離する。
+8. 実送信は --execute と LINE_DRY_RUN=false が揃ったときだけにする。
+9. OpenChatの非公式自動操作は実装しない。代替案をdocsに書く。
+10. GitHub Actionsでテストとサンプル成果物生成を行う。
+11. 変更後に以下を実行して結果を報告する。
+
+検証コマンド:
+PYTHONPATH=src python -m unittest discover -s tests -p 'test_*.py'
+python scripts/property_pipeline.py --input data/sample_properties.csv --output out --format all
+cd cloudflare-worker && npm test
+
+Secretがないため実行できない箇所は、dry-runまたは手順書更新に切り替えてください。
+```
+
+詳細なプロンプト集は `docs/AI_AGENT_PROMPTS_ja.md` にあります。
 
 ---
 
@@ -69,6 +165,7 @@ flowchart TD
 
 | 目的 | ファイル |
 |---|---|
+| AIエージェント委任プロンプト | `docs/AI_AGENT_PROMPTS_ja.md` |
 | LINE API調査結果 | `docs/LINE_API_RESEARCH_ja.md` |
 | 初期設定の詳細 | `docs/SETUP_LINE_ja.md` |
 | 画像付きセットアップ | `docs/VISUAL_SETUP_GUIDE_ja.md` |
@@ -453,42 +550,6 @@ python scripts/line_oa.py openchat-policy
 
 ---
 
-# Claude Code / Codexに任せる準備
-
-このリポジトリには、AIコーディングエージェント向けの指示を入れています。
-
-## Codex
-
-Codexには以下を読ませます。
-
-```text
-AGENTS.md
-CODEX.md
-```
-
-依頼例:
-
-```text
-物件CSVを取り込んでLINE配信用Flex Messageを生成して。実送信はしないで。
-```
-
-```text
-LINE公式アカウントのWebhookで物件問い合わせを受けたら、Google Sheetsに保存する処理を追加して。テストも更新して。
-```
-
-## Claude Code
-
-Claude Codeには以下を読ませます。
-
-```text
-CLAUDE.md
-.claude/settings.json
-```
-
-`.claude/settings.json` では、Secretファイルの読み取りや、直接の `curl api.line.me` 実行を制限する方針を入れています。
-
----
-
 # GitHub Actions
 
 このリポジトリの `validate` workflow は以下を行います。
@@ -599,6 +660,7 @@ line-sheet-digest/
 ├── data/
 │   └── sample_properties.csv
 ├── docs/
+│   ├── AI_AGENT_PROMPTS_ja.md
 │   ├── LINE_API_RESEARCH_ja.md
 │   ├── SETUP_LINE_ja.md
 │   ├── VISUAL_SETUP_GUIDE_ja.md
