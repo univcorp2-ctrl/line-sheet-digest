@@ -15,7 +15,7 @@
 ```bash
 python scripts/validate_env.py --mode local
 python scripts/property_pipeline.py --input data/sample_properties.csv --output out --format all
-python scripts/line_oa.py bot-info --dry-run
+python scripts/line_oa.py bot-info
 ```
 
 実送信するには、`.env.example` のSecretを設定した上で `--execute` を明示してください。
