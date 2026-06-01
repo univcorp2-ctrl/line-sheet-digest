@@ -3,6 +3,7 @@ name: validate
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 jobs:
   worker-tests:
@@ -16,3 +17,26 @@ jobs:
         with:
           node-version: '20'
       - run: npm test
+
+  python-tests-and-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate Python syntax
+        run: python -m compileall src scripts
+      - name: Run unit tests
+        env:
+          PYTHONPATH: src
+        run: python -m unittest discover -s tests -p 'test_*.py'
+      - name: Generate sample property outputs
+        env:
+          PYTHONPATH: src
+        run: python scripts/property_pipeline.py --input data/sample_properties.csv --output out --format all
+      - name: Upload property automation outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: property-automation-outputs
+          path: out/
