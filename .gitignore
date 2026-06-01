@@ -1,6 +1,11 @@
-node_modules/
-.DS_Store
 .env
-.dev.vars
-.clasp.json
-*.log
+.env.*
+!.env.example
+out/
+__pycache__/
+*.pyc
+.pytest_cache/
+node_modules/
+secrets/
+credentials*.json
+.DS_Store
