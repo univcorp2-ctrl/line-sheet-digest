@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-label="LINE setup guide">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#061826"/>
+      <stop offset="1" stop-color="#0b3d2e"/>
+    </linearGradient>
+    <style>
+      .title{font:700 34px sans-serif;fill:#fff}.sub{font:500 18px sans-serif;fill:#c8f7dc}.box{fill:#fff;stroke:#12c755;stroke-width:4;rx:18}.head{font:700 20px sans-serif;fill:#063b25}.txt{font:500 16px sans-serif;fill:#133}.small{font:500 14px sans-serif;fill:#345}.arrow{stroke:#fff;stroke-width:5;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 z" fill="#fff"/></marker>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <text x="42" y="58" class="title">LINE公式アカウント × 物件情報 自動化セットアップ</text>
+  <text x="42" y="92" class="sub">公式APIの範囲で、Webhook受信・Sheets保存・物件配信・AIエージェント運用まで整備</text>
+  <rect x="40" y="140" width="240" height="150" class="box"/><text x="64" y="178" class="head">1. 公式アカウント作成</text><text x="64" y="214" class="txt">LINE Official Account Manager</text><text x="64" y="246" class="small">Business IDでログイン</text><text x="64" y="270" class="small">対象アカウントを作成</text>
+  <line x1="280" y1="215" x2="342" y2="215" class="arrow"/>
+  <rect x="360" y="140" width="240" height="150" class="box"/><text x="384" y="178" class="head">2. Messaging API有効化</text><text x="384" y="214" class="txt">設定 → Messaging API</text><text x="384" y="246" class="small">プロバイダー選択</text><text x="384" y="270" class="small">後から変更不可</text>
+  <line x1="600" y1="215" x2="662" y2="215" class="arrow"/>
+  <rect x="680" y="140" width="250" height="150" class="box"/><text x="704" y="178" class="head">3. Developers Console</text><text x="704" y="214" class="txt">Secret / Token取得</text><text x="704" y="246" class="small">Webhook URL設定</text><text x="704" y="270" class="small">検証ボタンで200確認</text>
+  <line x1="930" y1="215" x2="992" y2="215" class="arrow"/>
+  <rect x="1010" y="140" width="230" height="150" class="box"/><text x="1034" y="178" class="head">4. Cloudflare Worker</text><text x="1034" y="214" class="txt">x-line-signature検証</text><text x="1034" y="246" class="small">対象sourceIdだけ転送</text><text x="1034" y="270" class="small">/healthzで監視</text>
+  <rect x="130" y="390" width="280" height="160" class="box"/><text x="154" y="428" class="head">5. Google Sheets / GAS</text><text x="154" y="464" class="txt">RawMessages保存</text><text x="154" y="496" class="small">定期要約</text><text x="154" y="520" class="small">自分のLINEへ通知</text>
+  <rect x="500" y="390" width="280" height="160" class="box"/><text x="524" y="428" class="head">6. 物件パイプライン</text><text x="524" y="464" class="txt">CSV/JSON → 正規化</text><text x="524" y="496" class="small">Flex Message生成</text><text x="524" y="520" class="small">artifactとして保存</text>
+  <rect x="870" y="390" width="280" height="160" class="box"/><text x="894" y="428" class="head">7. Claude / Codex</text><text x="894" y="464" class="txt">AGENTS.md / CLAUDE.md</text><text x="894" y="496" class="small">dry-run優先</text><text x="894" y="520" class="small">テストとCIを必ず実行</text>
+  <line x1="1125" y1="290" x2="275" y2="385" class="arrow"/>
+  <line x1="410" y1="470" x2="492" y2="470" class="arrow"/>
+  <line x1="780" y1="470" x2="862" y2="470" class="arrow"/>
+  <text x="54" y="645" class="sub">OpenChatは非公式クロール・個人アカウント自動操作をしない。公式アカウント1:1、通常グループ、手動投稿に切り替える。</text>
+  <text x="54" y="680" class="sub">実送信は --execute がある時だけ。SecretはGitHubにコミットせず、Actions Secrets / Cloudflare / GASに保存。</text>
+</svg>
